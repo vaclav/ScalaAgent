@@ -4,10 +4,6 @@ import actors.Actor
 import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.CountDownLatch
 
-case class FunctionHolder[T](val fun: ((T) => T))
-case class ProcedureHolder[T](val fun: ((T) => Unit))
-case class ValueHolder[T](val value: T)
-
 abstract class CopyStrategy[T] extends Function[T,T]
 
 class IdentityCopyStrategy[T] extends CopyStrategy[T] {
@@ -26,8 +22,9 @@ class IdentityCopyStrategy[T] extends CopyStrategy[T] {
 //todo turn strategies into objects
 //todo add tests
 //todo deploy to GitHub
+//todo ensure correct package
 
-class ScalaAgent[T](var data: T, val copyStrategy: CopyStrategy[T]) extends Actor {
+class Agent[T](var data: T, val copyStrategy: CopyStrategy[T]) extends Actor {
 
     def this(data : T) = { this (data, new IdentityCopyStrategy[T])}
 
@@ -76,11 +73,15 @@ class ScalaAgent[T](var data: T, val copyStrategy: CopyStrategy[T]) extends Acto
     final def apply(message: T) {
         this ! ValueHolder(message)
     }
+
+    private case class FunctionHolder[T](val fun: ((T) => T))
+    private case class ProcedureHolder[T](val fun: ((T) => Unit))
+    private case class ValueHolder[T](val value: T)
 }
 
 object App {
     def main(args: Array[String]) {
-        val agent: ScalaAgent[List[Int]] = new ScalaAgent[List[Int]](List(10))
+        val agent: Agent[List[Int]] = new Agent[List[Int]](List(10))
         agent.start()
         agent(List[Int](1))
         agent((x: List[Int]) => 2 :: x)
