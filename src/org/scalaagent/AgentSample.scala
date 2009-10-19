@@ -95,7 +95,6 @@ object ShoppingCartExample {
         val cart: ShoppingCart = new ShoppingCart
         cart.start()
 
-        
         cart.addItem("Budweiser")
         cart.addItem("Pilsner")
         cart.addItem("Staropramen")
