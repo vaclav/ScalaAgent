@@ -95,12 +95,12 @@ object ShoppingCartExample {
         val cart: ShoppingCart = new ShoppingCart
         cart.start()
 
+        
         cart.addItem("Budweiser")
         cart.addItem("Pilsner")
         cart.addItem("Staropramen")
         cart.removeItem("Budweiser")
 
-        
         println(cart.getContent())
         cart.clear()
         println(cart.getContent())
