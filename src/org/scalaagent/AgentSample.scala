@@ -100,6 +100,7 @@ object ShoppingCartExample {
         cart.addItem("Staropramen")
         cart.removeItem("Budweiser")
 
+        
         println(cart.getContent())
         cart.clear()
         println(cart.getContent())
