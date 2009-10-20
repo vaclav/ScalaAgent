@@ -20,10 +20,6 @@ import actors.Actor
 import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.CountDownLatch
 
-//todo add tests
-//todo test error handler
-//todo test custom error handler
-
 /**
  * The Agent class was strongly inspired by the agent principle in Clojure. Essentially, an agent wraps a shared mutable state
  * and hides it behind a message-passing interface. Agents accept messages and process them on behalf of the wrapped state.
@@ -159,33 +155,4 @@ abstract class CopyStrategy[T] extends Function[T, T]
  */
 class IdentityCopyStrategy[T] extends CopyStrategy[T] {
     def apply(x: T): T = {x}
-}
-
-//todo clone data
-//class CloneCopyStrategy[T <: {clone : T => Object}] extends CopyStrategy[T] {
-//    def apply(x:T) : T = {
-//        val clone: AnyRef = x.clone()
-//        clone.asInstanceOf(T)
-//    }
-//}
-
-object App {
-    def main(args: Array[String]) {
-        val agent: Agent[List[Int]] = new Agent[List[Int]](List(10))
-        agent.start()
-        agent(List[Int](1))
-        agent((x: List[Int]) => 2 :: x)
-        agent((x: List[Int]) => 3 :: x)
-        agent((x: List[Int]) => x.reverse)
-        agent((x: List[Int]) => {
-            if (true) throw new RuntimeException("test")
-            return List()
-        })
-        agent((x: List[Int]) => {
-            x.map(_ * 2)
-        })
-        agent.getValue((x: List[Int]) => {throw new RuntimeException("read test")})
-        agent.getValue((x: List[Int]) => {println("Value: " + x)})
-        println("Result: " + agent.getValue())
-    }
 }

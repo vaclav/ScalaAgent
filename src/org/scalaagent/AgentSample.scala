@@ -31,10 +31,11 @@ import scala.collection.mutable.HashMap
 object AgentSample {
     def main(args: Array[String]) {
         val agent: Agent[List[String]] = new Agent[List[String]](List("Joe"))
-        agent.start()
-        agent(List("Dave")) //Set the state to a new value
+        agent start()
+        agent(List("Dave"))                      //Set the state to a new value
         agent((x: List[String]) => "Alice" :: x) //Pre-pend a value to the internal list
-        agent.getValue((x: List[String]) => x.foreach(println _)) //Print the content asynchronously
+        agent("Susan" :: _)                      //Pre-pend a value to the internal list
+        agent getValue(_.foreach(println _))     //Print the content asynchronously
     }
 }
 
@@ -48,20 +49,21 @@ object CounterSample {
 
     def main(args: Array[String]) {
         val agent: Agent[Long] = new Agent[Long](0L)    //Wrap a counter by an Agent
-        agent.start()
+        agent start
 
         agent((x: Long) => x + 100) //Increment the value by 100
+        agent(_ + 100)              //Increment the value by 100
 
         new Thread(new Runnable() { //Start a new thread to manipulate the counter in parallel
             def run = {
-                    agent((x: Long) => increment(x)) //Increment the value by 1 calling the increment function
+                    agent(increment(_)) //Increment the value by 1 calling the increment function
                 }
         }).start()
 
         agent(increment _)          //Send a method that will increment the counter by 1
         agent(decrement(3)_)        //Send a method that will decrement the counter by 3
 
-        println(agent.getValue()) //Print the content
+        println(agent getValue) //Print the content
     }
 }
 
@@ -72,7 +74,7 @@ object CounterSample {
 class ShoppingCart {
     val content: Agent[HashMap[String, Int]] = new Agent[HashMap[String, Int]](new HashMap())
 
-    def start() { content.start()}
+    def start() { content start}
 
     def getContent() : HashMap[String, Int] = { content.getValue }
 
@@ -92,7 +94,7 @@ class ShoppingCart {
 
     def clear() {
         content((x: HashMap[String, Int]) => {
-            x.clear()
+            x.clear
             x
         })
     }
@@ -101,16 +103,57 @@ class ShoppingCart {
 object ShoppingCartExample {
     def main(args: Array[String]) {
         val cart: ShoppingCart = new ShoppingCart
-        cart.start()
+        cart start
 
-        cart.addItem("Budweiser")
-        cart.addItem("Pilsner")
-        cart.addItem("Staropramen")
-        cart.removeItem("Budweiser")
+        cart addItem "Budweiser" 
+        cart addItem "Pilsner"
+        cart addItem "Staropramen"
+        cart removeItem "Budweiser"
 
-        println(cart.getContent())
-        cart.clear()
-        println(cart.getContent())
+        println(cart getContent)
+        cart clear()
+        println(cart getContent)
 
+    }
+}
+
+object CustomCopystrategyExample {
+
+    object MyIntCopyStrategy extends CopyStrategy[Int] {
+        def apply(x:Int) : Int = {
+            def a = x
+            return a
+        }
+    }
+
+    def main(args: Array[String]) {
+        val agent: Agent[Int] = new Agent[Int](0, MyIntCopyStrategy)
+        agent start
+
+        agent(_ + 10)
+        agent(_ + 20)
+
+        println(agent getValue)
+    }
+}
+
+object NumberExample {
+    def main(args: Array[String]) {
+        val agent: Agent[List[Int]] = new Agent[List[Int]](List(10))
+        agent.start()
+        agent(List[Int](1))
+        agent((x: List[Int]) => 2 :: x)
+        agent((x: List[Int]) => 3 :: x)
+        agent((x: List[Int]) => x.reverse)
+//        agent((x: List[Int]) => {
+//            if (true) throw new RuntimeException("test")
+//            return List()
+//        })
+        agent((x: List[Int]) => {
+            x.map(_ * 2)
+        })
+//        agent.getValue((x: List[Int]) => {throw new RuntimeException("read test")})
+        agent.getValue((x: List[Int]) => {println("Value: " + x)})
+        println("Result: " + agent.getValue())
     }
 }
