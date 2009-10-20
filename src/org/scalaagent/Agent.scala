@@ -23,7 +23,6 @@ import java.util.concurrent.CountDownLatch
 //todo add tests
 //todo test error handler
 //todo test custom error handler
-//todo deploy to GitHub
 
 /**
  * The Agent class was strongly inspired by the agent principle in Clojure. Essentially, an agent wraps a shared mutable state
@@ -163,7 +162,7 @@ class IdentityCopyStrategy[T] extends CopyStrategy[T] {
 }
 
 //todo clone data
-//class CloneCopyStrategy[T <: AnyRef] extends CopyStrategy[T] {
+//class CloneCopyStrategy[T <: {clone : T => Object}] extends CopyStrategy[T] {
 //    def apply(x:T) : T = {
 //        val clone: AnyRef = x.clone()
 //        clone.asInstanceOf(T)

@@ -42,18 +42,26 @@ object AgentSample {
  * Wraps a counter allowing other threads to safely update the counter concurrently
  */
 object CounterSample {
-    def increment(x: Long) = x + 1
 
-    def decrement(x: Long) = x - 1
+    def increment(x: Long) = x + 1
+    def decrement(amount : Long)(x: Long) = x - amount
 
     def main(args: Array[String]) {
-        val agent: Agent[Long] = new Agent[Long](0L)
+        val agent: Agent[Long] = new Agent[Long](0L)    //Wrap a counter by an Agent
         agent.start()
-        agent((x: Long) => x + 100) //Increment the value by 100
-        agent((x: Long) => increment(x)) //Increment the value by 1 calling the increment function
-        //        agent(decrement)  //todo enable
-        println(agent.getValue()) //Print the content
 
+        agent((x: Long) => x + 100) //Increment the value by 100
+
+        new Thread(new Runnable() { //Start a new thread to manipulate the counter in parallel
+            def run = {
+                    agent((x: Long) => increment(x)) //Increment the value by 1 calling the increment function
+                }
+        }).start()
+
+        agent(increment _)          //Send a method that will increment the counter by 1
+        agent(decrement(3)_)        //Send a method that will decrement the counter by 3
+
+        println(agent.getValue()) //Print the content
     }
 }
 
