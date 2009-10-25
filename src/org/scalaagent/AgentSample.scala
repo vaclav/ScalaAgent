@@ -135,6 +135,9 @@ object ShoppingCartExample {
     }
 }
 
+/**
+ * Uses a custom copy strategy to avoid returning the original state instance.
+ */
 object CustomCopyStrategyExample {
 
     object MyIntCopyStrategy extends CopyStrategy[Int] {
@@ -155,6 +158,9 @@ object CustomCopyStrategyExample {
     }
 }
 
+/**
+ * Shows (after un-commenting) the default error handling mechanics.
+ */
 object NumberExample {
     def main(args: Array[String]) {
         val agent: Agent[List[Int]] = new Agent[List[Int]](List(10))
