@@ -92,6 +92,7 @@ class Agent[T](var data: T, val copyStrategy: CopyStrategy[T], val errorHandler:
     /**
      * Submits a request to read the internal state.
      * A copy of the internal state will be returned, depending on the underlying effective copyStrategy.
+     * Internally leverages the asynchronous getValue() method and then waits for its result on a CountDownLatch.
      */
     final def getValue(): T = {
         val ref: AtomicReference[T] = new AtomicReference[T]()
@@ -137,7 +138,7 @@ class Agent[T](var data: T, val copyStrategy: CopyStrategy[T], val errorHandler:
 private object defaultErrorHandler extends Function[Throwable, Boolean] {
     /**
      * Calls when an exception occurs in the agent's body.
-     * @return Ture, if the agent should continue processing messages, false if the agent should stop immediately.
+     * @return True, if the agent should continue processing messages, false if the agent should stop immediately.
      */
     def apply(x: Throwable): Boolean = {
         x.printStackTrace(System.err)

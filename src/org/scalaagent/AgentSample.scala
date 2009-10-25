@@ -98,6 +98,22 @@ class ShoppingCart {
             x
         })
     }
+
+    /**
+     * Curry the changeQuantity() private method and send it off to the Agent for processing
+     */
+    def increaseQuantity(product:String, quantity:Int) {
+        content(changeQuantity(product, quantity, _:HashMap[String, Int]))
+    }
+
+    /**
+     * Manipulates the cart's map directly, since it is never called directly by clients, but always indirectly
+     * inside the Agent's thread.
+     */
+    private def changeQuantity(product:String, quantity:Int, items:HashMap[String, Int]) : HashMap[String, Int] = {
+        items(product) = (if (items.contains(product)) items(product) else 0) + quantity
+        items
+    }
 }
 
 object ShoppingCartExample {
@@ -111,13 +127,15 @@ object ShoppingCartExample {
         cart removeItem "Budweiser"
 
         println(cart getContent)
+        cart increaseQuantity("Staropramen", 5)
+        println(cart getContent)
         cart clear()
         println(cart getContent)
 
     }
 }
 
-object CustomCopystrategyExample {
+object CustomCopyStrategyExample {
 
     object MyIntCopyStrategy extends CopyStrategy[Int] {
         def apply(x:Int) : Int = {

@@ -47,6 +47,7 @@
     <file url="file://$PROJECT_DIR$/src/org/scalaagent/Agent.scala" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/org/scalaagent/AgentSample.scala" charset="UTF-8" />
   </component>
+  <component name="IdProvider" IDEtalkID="1B4D9909480C5D922447044D2B7F32DA" />
   <component name="InspectionProjectProfileManager">
     <option name="PROJECT_PROFILE" value="Project Default" />
     <option name="USE_PROJECT_PROFILE" value="true" />
@@ -479,6 +480,9 @@
     <dictionary name="vaclav" />
   </component>
   <component name="ProjectFileVersion" converted="true" />
+  <component name="ProjectKey">
+    <option name="state" value="project://e13d9c37-4197-42ec-a719-ab42a50ec6d0" />
+  </component>
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ScalaAgent.iml" filepath="$PROJECT_DIR$/ScalaAgent.iml" />
