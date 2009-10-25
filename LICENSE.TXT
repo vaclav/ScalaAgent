@@ -1,0 +1,2 @@
+ScalaAgent is licences under the Apache Software Licence v2.0. to Vaclav Pech (http://www.linkedin.com/in/vaclavpech)
+See http://www.apache.org/licenses/LICENSE-2.0 for the text of the licence.
