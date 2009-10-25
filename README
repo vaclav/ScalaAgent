@@ -1,5 +1,5 @@
 The Agent class was strongly inspired by the agent principle in Clojure. Essentially, an agent wraps a shared mutable state and hides it behind a message-passing interface.
-Agents accept messages and process them on behalf of the wrapped state. Typically agents accept functions / commands as messages and ensure the submitted commands are executed against the internal agent's state in a thread-safe (sequentially). The submitted functions / commands take the internal state as a parameter and their output becomes the new internal state value.
+Agents accept messages and process them on behalf of the wrapped state. Typically agents accept functions / commands as messages and ensure the submitted commands are executed against the internal agent's state in a thread-safe manner (sequentially). The submitted functions / commands take the internal state as a parameter and their output becomes the new internal state value.
 The code that is submitted to an agent doesn't need to pay attention to threading or synchronization, the agent will provide such guarantees by itself.
 
 See the examples of use for more details.
