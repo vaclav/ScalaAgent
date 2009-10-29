@@ -94,10 +94,10 @@ class Agent[T](var data: T, val copyStrategy: CopyStrategy[T], val errorHandler:
      * A copy of the internal state will be returned, depending on the underlying effective copyStrategy.
      * Internally leverages the asynchronous getValue() method and then waits for its result on a CountDownLatch.
      */
-    final def getValue(): T = {
+    final def get : T = {
         val ref: AtomicReference[T] = new AtomicReference[T]()
         val latch: CountDownLatch = new CountDownLatch(1)
-        getValue((x: T) => {ref.set(x); latch.countDown})
+        get((x: T) => {ref.set(x); latch.countDown})
         latch.await
         return ref.get
     }
@@ -106,7 +106,7 @@ class Agent[T](var data: T, val copyStrategy: CopyStrategy[T], val errorHandler:
      * Asynchronously submits a request to read the internal state. The supplied function will be executed on the returned internal state value.
      * A copy of the internal state will be used, depending on the underlying effective copyStrategy.
      */
-    final def getValue(message: (T => Unit)) {
+    final def get(message: (T => Unit)) {
         this ! ProcedureHolder(message)
     }
 

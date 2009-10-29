@@ -17,6 +17,7 @@
 package org.scalaagent
 
 import scala.collection.mutable.HashMap
+import scala.actors.Actor._
 
 
 /**
@@ -35,7 +36,7 @@ object AgentSample {
         agent(List("Dave"))                      //Set the state to a new value
         agent((x: List[String]) => "Alice" :: x) //Pre-pend a value to the internal list
         agent("Susan" :: _)                      //Pre-pend a value to the internal list
-        agent getValue(_.foreach(println _))     //Print the content asynchronously
+        agent get(_.foreach(println _))     //Print the content asynchronously
     }
 }
 
@@ -52,18 +53,22 @@ object CounterSample {
         agent start
 
         agent((x: Long) => x + 100) //Increment the value by 100
-        agent(_ + 100)              //Increment the value by 100
+        agent{_ + 100}              //Increment the value by 100
+        def a = actor {
+            agent(_ + 100)              //Increment the value by 100 from within an actor
+        }
+        a.start
 
         new Thread(new Runnable() { //Start a new thread to manipulate the counter in parallel
             def run = {
                     agent(increment(_)) //Increment the value by 1 calling the increment function
                 }
-        }).start()
+        }).start
 
-        agent(increment _)          //Send a method that will increment the counter by 1
-        agent(decrement(3)_)        //Send a method that will decrement the counter by 3
+        agent(increment _)           //Send a method that will increment the counter by 1
+        agent(decrement(3) _)        //Send a method that will decrement the counter by 3
 
-        println(agent getValue) //Print the content
+        println(agent get)               //Print the content
     }
 }
 
@@ -76,7 +81,7 @@ class ShoppingCart {
 
     def start() { content start}
 
-    def getContent() : HashMap[String, Int] = { content.getValue }
+    def getContent() : HashMap[String, Int] = { content.get }
 
     def addItem(product: String) {
         content((x: HashMap[String, Int]) => {
@@ -154,7 +159,7 @@ object CustomCopyStrategyExample {
         agent(_ + 10)
         agent(_ + 20)
 
-        println(agent getValue)
+        println(agent get)
     }
 }
 
@@ -176,8 +181,8 @@ object NumberExample {
         agent((x: List[Int]) => {
             x.map(_ * 2)
         })
-//        agent.getValue((x: List[Int]) => {throw new RuntimeException("read test")})
-        agent.getValue((x: List[Int]) => {println("Value: " + x)})
-        println("Result: " + agent.getValue())
+//        agent.get((x: List[Int]) => {throw new RuntimeException("read test")})
+        agent.get((x: List[Int]) => {println("Value: " + x)})
+        println("Result: " + agent.get)
     }
 }
