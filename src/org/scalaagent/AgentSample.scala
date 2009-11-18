@@ -16,7 +16,6 @@
 
 package org.scalaagent
 
-import scala.collection.mutable.HashMap
 import scala.actors.Actor._
 
 
