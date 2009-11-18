@@ -133,6 +133,21 @@ class Agent[T](var data: T, val copyStrategy: CopyStrategy[T], val errorHandler:
 }
 
 /**
+ * Provides factory methods to create Agents.
+ */
+object Agent {
+    def apply[T](data:T) = {
+        new Agent(data)
+    }
+    def apply[T](data:T, copyStrategy:CopyStrategy[T]) = {
+        new Agent(data, copyStrategy)
+    }
+    def apply[T](data:T, copyStrategy:CopyStrategy[T], errorHandler: (Throwable => Boolean)) = {
+        new Agent(data, copyStrategy, errorHandler)
+    }
+}
+
+/**
  * A default error handler, which only prints out the error stacktrace and stops the agent.
  */
 private object defaultErrorHandler extends Function[Throwable, Boolean] {

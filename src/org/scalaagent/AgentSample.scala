@@ -31,7 +31,7 @@ import scala.actors.Actor._
  */
 object AgentSample {
     def main(args: Array[String]) {
-        val agent: Agent[List[String]] = new Agent[List[String]](List("Joe"))
+        val agent = Agent(List("Joe"))
         agent start()
         agent(List("Dave"))                      //Set the state to a new value
         agent((x: List[String]) => "Alice" :: x) //Pre-pend a value to the internal list
@@ -49,7 +49,7 @@ object CounterSample {
     def decrement(amount : Long)(x: Long) = x - amount
 
     def main(args: Array[String]) {
-        val agent: Agent[Long] = new Agent[Long](0L)    //Wrap a counter by an Agent
+        val agent = Agent(0L)    //Wrap a counter by an Agent
         agent start
 
         agent((x: Long) => x + 100) //Increment the value by 100
@@ -77,7 +77,7 @@ object CounterSample {
  * All public method calls on the ShoppingCart are transformed into a command execution on the internal agent.
  */
 class ShoppingCart {
-    val content: Agent[HashMap[String, Int]] = new Agent[HashMap[String, Int]](new HashMap())
+    val content = Agent(new HashMap[String, Int]())
 
     def start() { content start}
 
@@ -153,7 +153,7 @@ object CustomCopyStrategyExample {
     }
 
     def main(args: Array[String]) {
-        val agent: Agent[Int] = new Agent[Int](0, MyIntCopyStrategy)
+        val agent = Agent(0, MyIntCopyStrategy)
         agent start
 
         agent(_ + 10)
@@ -168,7 +168,7 @@ object CustomCopyStrategyExample {
  */
 object NumberExample {
     def main(args: Array[String]) {
-        val agent: Agent[List[Int]] = new Agent[List[Int]](List(10))
+        val agent = Agent(List(10))
         agent.start()
         agent(List[Int](1))
         agent((x: List[Int]) => 2 :: x)
