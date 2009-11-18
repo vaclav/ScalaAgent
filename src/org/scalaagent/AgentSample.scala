@@ -77,30 +77,27 @@ object CounterSample {
  * All public method calls on the ShoppingCart are transformed into a command execution on the internal agent.
  */
 class ShoppingCart {
-    val content = Agent(new HashMap[String, Int]())
+    val content = Agent(Map[String, Int]())
 
     def start() { content start}
 
-    def getContent() : HashMap[String, Int] = { content.get }
+    def getContent() : Map[String, Int] = { content.get }
 
     def addItem(product: String) {
-        content((x: HashMap[String, Int]) => {
-            x += product -> 1
-            x
+        content((x: Map[String, Int]) => {
+            x + product -> 1
         })
     }
 
     def removeItem(product: String) {
-        content((x: HashMap[String, Int]) => {
-            x -= product
-            x
+        content((x: Map[String, Int]) => {
+            x - product
         })
     }
 
     def clear() {
-        content((x: HashMap[String, Int]) => {
-            x.clear
-            x
+        content((x: Map[String, Int]) => {
+            Map[String, Int]()
         })
     }
 
@@ -108,16 +105,18 @@ class ShoppingCart {
      * Curry the changeQuantity() private method and send it off to the Agent for processing
      */
     def increaseQuantity(product:String, quantity:Int) {
-        content(changeQuantity(product, quantity, _:HashMap[String, Int]))
+        content(changeQuantity(product, quantity, _:Map[String, Int]))
     }
 
     /**
      * Manipulates the cart's map directly, since it is never called directly by clients, but always indirectly
      * inside the Agent's thread.
      */
-    private def changeQuantity(product:String, quantity:Int, items:HashMap[String, Int]) : HashMap[String, Int] = {
-        items(product) = (if (items.contains(product)) items(product) else 0) + quantity
-        items
+    private def changeQuantity(product:String, quantity:Int, items:Map[String, Int]) = {
+        if (items.contains(product)) {
+            def currentQuantity = items(product)
+            items + product -> (currentQuantity + quantity)
+        } else items
     }
 }
 
