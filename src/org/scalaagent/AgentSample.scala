@@ -123,8 +123,8 @@ object ShoppingCartExample {
     def main(args: Array[String]) {
         val cart: ShoppingCart = new ShoppingCart
         cart start
-
-        cart addItem "Budweiser" 
+        
+        cart addItem "Budweiser"
         cart addItem "Pilsner"
         cart addItem "Staropramen"
         cart removeItem "Budweiser"
@@ -167,9 +167,10 @@ object CustomCopyStrategyExample {
 object NumberExample {
     def main(args: Array[String]) {
         val agent = Agent(List(10))
-        agent.start()
-        agent(List[Int](1))
-        agent((x: List[Int]) => 2 :: x)
+        agent start
+
+        agent() = List(1)
+        agent() = (x: List[Int]) => 2 :: x
         agent((x: List[Int]) => 3 :: x)
         agent((x: List[Int]) => x.reverse)
 //        agent((x: List[Int]) => {
@@ -181,6 +182,6 @@ object NumberExample {
         })
 //        agent.get((x: List[Int]) => {throw new RuntimeException("read test")})
         agent.get((x: List[Int]) => {println("Value: " + x)})
-        println("Result: " + agent.get)
+        println("Result: " + agent())
     }
 }

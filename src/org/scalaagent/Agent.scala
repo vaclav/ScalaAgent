@@ -33,10 +33,10 @@ import java.util.concurrent.CountDownLatch
  * @author Vaclav Pech
  * Date: Oct 18, 2009
  */
-class Agent[T](var data: T, val copyStrategy: CopyStrategy[T], val errorHandler: (Throwable => Boolean)) extends Actor {
-    def this(data: T) = {this (data, new IdentityCopyStrategy[T], defaultErrorHandler)}
+sealed class Agent[T] private (var data: T, val copyStrategy: CopyStrategy[T], val errorHandler: (Throwable => Boolean)) extends Actor {
+    private def this(data: T) = {this (data, new IdentityCopyStrategy[T], defaultErrorHandler)}
 
-    def this(data: T, copyStrategy: CopyStrategy[T]) = {
+    private def this(data: T, copyStrategy: CopyStrategy[T]) = {
         this (data, copyStrategy, defaultErrorHandler)
     }
 
@@ -111,6 +111,23 @@ class Agent[T](var data: T, val copyStrategy: CopyStrategy[T], val errorHandler:
     }
 
     /**
+     * Submits a request to read the internal state.
+     * A copy of the internal state will be returned, depending on the underlying effective copyStrategy.
+     * Internally leverages the asynchronous getValue() method and then waits for its result on a CountDownLatch.
+     */
+    final def apply() : T = {
+        get
+    }
+
+    /**
+     * Asynchronously submits a request to read the internal state. The supplied function will be executed on the returned internal state value.
+     * A copy of the internal state will be used, depending on the underlying effective copyStrategy.
+     */
+//    final def apply(message: (T => Unit)) {
+//        get(message)
+//    }
+
+    /**
      * Submits the provided function for execution against the internal agent's state
      */
     final def apply(message: (T => T)) {
@@ -121,6 +138,20 @@ class Agent[T](var data: T, val copyStrategy: CopyStrategy[T], val errorHandler:
      * Submits a new value to be set as the new agent's internal state
      */
     final def apply(message: T) {
+        this ! ValueHolder(message)
+    }
+
+    /**
+     * Submits the provided function for execution against the internal agent's state
+     */
+    final def update(message: (T => T)) {
+        this ! FunctionHolder(message)
+    }
+
+    /**
+     * Submits a new value to be set as the new agent's internal state
+     */
+    final def update(message: T) {
         this ! ValueHolder(message)
     }
 
@@ -136,14 +167,20 @@ class Agent[T](var data: T, val copyStrategy: CopyStrategy[T], val errorHandler:
  * Provides factory methods to create Agents.
  */
 object Agent {
-    def apply[T](data:T) = {
-        new Agent(data)
+    def apply[T](data:T) : Agent[T] = {
+        def agent = new Agent(data)
+//        agent.start()
+        return agent
     }
     def apply[T](data:T, copyStrategy:CopyStrategy[T]) = {
-        new Agent(data, copyStrategy)
+        def agent = new Agent(data, copyStrategy)
+//        agent.start()
+        agent
     }
     def apply[T](data:T, copyStrategy:CopyStrategy[T], errorHandler: (Throwable => Boolean)) = {
-        new Agent(data, copyStrategy, errorHandler)
+        def agent = new Agent(data, copyStrategy, errorHandler)
+//        agent.start()
+        agent
     }
 }
 
